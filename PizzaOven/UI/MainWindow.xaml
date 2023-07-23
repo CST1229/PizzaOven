@@ -431,7 +431,7 @@
                     <Grid Name="MainGrid">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50"/>
-                            <RowDefinition Height="1.6*" MinHeight="200"/>
+                            <RowDefinition Height="1.6*" MinHeight="100"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>

@@ -120,7 +120,7 @@ namespace PizzaOven
                             main.ModGrid.IsEnabled = true;
                             main.ConfigButton.IsEnabled = true;
                             main.LaunchButton.IsEnabled = true;
-							main.CookButton.IsEnabled = true;
+                            main.CookButton.IsEnabled = true;
                             main.ClearButton.IsEnabled = true;
                             main.UpdateButton.IsEnabled = true;
                             main.ModGridSearchButton.IsEnabled = true;
@@ -155,7 +155,7 @@ namespace PizzaOven
             main.ModGrid.IsEnabled = true;
             main.ConfigButton.IsEnabled = true;
             main.LaunchButton.IsEnabled = true;
-			main.CookButton.IsEnabled = true;
+            main.CookButton.IsEnabled = true;
             main.ClearButton.IsEnabled = true;
             main.UpdateButton.IsEnabled = true;
             main.ModGridSearchButton.IsEnabled = true;

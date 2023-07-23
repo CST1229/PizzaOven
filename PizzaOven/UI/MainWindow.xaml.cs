@@ -121,13 +121,15 @@ namespace PizzaOven
             if (Global.config.ModsFolder == null)
             {
                 // Setup on launch if not setup yet
-                if (Setup.GameSetup()) {
+                if (Setup.GameSetup())
+                {
                     LaunchButton.IsEnabled = true;
-					CookButton.IsEnabled = true;
-                } else
+                    CookButton.IsEnabled = true;
+                }
+                else
                 {
                     LaunchButton.IsEnabled = false;
-					CookButton.IsEnabled = false;
+                    CookButton.IsEnabled = false;
                     Global.logger.WriteLine("Please click Setup before starting!", LoggerType.Warning);
                 }
             }
@@ -236,21 +238,21 @@ namespace PizzaOven
                     Dispatcher.Invoke(() =>
                     {
                         LaunchButton.IsEnabled = true;
-						CookButton.IsEnabled = true;
+                        CookButton.IsEnabled = true;
                     });
                 }
             });
         }
-		
-		private async Task<bool> Cook()
-		{
+
+        private async Task<bool> Cook()
+        {
             // Build Mod Loadout
             if (Global.config.ModsFolder != null)
             {
                 ModGrid.IsEnabled = false;
                 ConfigButton.IsEnabled = false;
                 LaunchButton.IsEnabled = false;
-				CookButton.IsEnabled = false;
+                CookButton.IsEnabled = false;
                 ClearButton.IsEnabled = false;
                 UpdateButton.IsEnabled = false;
                 ModGridSearchButton.IsEnabled = false;
@@ -263,7 +265,7 @@ namespace PizzaOven
                     ModGrid.IsEnabled = true;
                     ConfigButton.IsEnabled = true;
                     LaunchButton.IsEnabled = true;
-					CookButton.IsEnabled = true;
+                    CookButton.IsEnabled = true;
                     ClearButton.IsEnabled = true;
                     UpdateButton.IsEnabled = true;
                     ModGridSearchButton.IsEnabled = true;
@@ -272,30 +274,30 @@ namespace PizzaOven
                 ModGrid.IsEnabled = true;
                 ConfigButton.IsEnabled = true;
                 LaunchButton.IsEnabled = true;
-				CookButton.IsEnabled = true;
+                CookButton.IsEnabled = true;
                 ClearButton.IsEnabled = true;
                 UpdateButton.IsEnabled = true;
                 ModGridSearchButton.IsEnabled = true;
-				return true;
+                return true;
             }
             else
             {
                 Global.logger.WriteLine("Please click Setup before starting!", LoggerType.Warning);
                 return false;
             }
-		}
-		
-		private async void Cook_Click(object sender, RoutedEventArgs e)
-		{
-			if (await Cook())
-			{
+        }
+
+        private async void Cook_Click(object sender, RoutedEventArgs e)
+        {
+            if (await Cook())
+            {
                 Global.logger.WriteLine($"Mods cooked.", LoggerType.Info);
-			}
-		}
-		
+            }
+        }
+
         private async void Launch_Click(object sender, RoutedEventArgs e)
         {
-			if (!await Cook()) return;
+            if (!await Cook()) return;
             // Launch game
             if (Global.config.Launcher != null && File.Exists(Global.config.Launcher))
             {
@@ -616,7 +618,7 @@ namespace PizzaOven
             ModGrid.IsEnabled = false;
             ConfigButton.IsEnabled = false;
             LaunchButton.IsEnabled = false;
-			CookButton.IsEnabled = false;
+            CookButton.IsEnabled = false;
             ClearButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
             ModGridSearchButton.IsEnabled = false;
