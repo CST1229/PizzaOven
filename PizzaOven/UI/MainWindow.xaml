@@ -359,25 +359,25 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock VerticalAlignment="Center" Panel.ZIndex="4" FontSize="40" FontWeight="Medium" HorizontalAlignment="Center" Foreground="#f2f2f2"/>
-                    <Image Margin="5,10,5,5" Source="{Binding Path=preview,Mode=OneWay,IsAsync=True}" Height="168" Panel.ZIndex="3"  VerticalAlignment="Center" Stretch="Uniform"/>
-                    <Rectangle Height="168" Panel.ZIndex="1" Fill="Black" Stretch="UniformToFill" Margin="5,10,5,5" VerticalAlignment="Center">
+                    <Image Margin="2,5,2,2" Source="{Binding Path=preview,Mode=OneWay,IsAsync=True}" Height="130" Panel.ZIndex="3"  VerticalAlignment="Center" Stretch="Uniform"/>
+                    <Rectangle Height="130" Panel.ZIndex="1" Fill="Black" Stretch="UniformToFill" Margin="2,5,2,2" VerticalAlignment="Center">
                         <Rectangle.OpacityMask>
                             <ImageBrush ImageSource="{Binding Path=preview,Mode=OneWay,IsAsync=True}"/>
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                    <TextBlock x:Name="Title" Margin="5" Grid.Row="1" FontWeight="Medium" TextTrimming="WordEllipsis" Background="Transparent" VerticalAlignment="Center"  Foreground="#f2f2f2" Text="{Binding Path=name}"/>
+                    <TextBlock x:Name="Title" Margin="2" Grid.Row="1" FontWeight="Medium" TextTrimming="WordEllipsis" Background="Transparent" VerticalAlignment="Center"  Foreground="#f2f2f2" Text="{Binding Path=name}"/>
                     <Popup PlacementTarget="{Binding ElementName=Title}" IsOpen="{Binding IsMouseDirectlyOver, ElementName=Title, Mode=OneWay}" AllowsTransparency="True">
-                        <Border CornerRadius="5" Panel.ZIndex="0" Margin="10">
+                        <Border CornerRadius="5" Panel.ZIndex="0" Margin="5">
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="#101010" Opacity="0.9"/>
                             </Border.BorderBrush>
                             <Border.Background>
                                 <SolidColorBrush Color="#101010" Opacity="0.9"/>
                             </Border.Background>
-                            <TextBlock Margin="10" Text="{Binding Path=name}" Foreground="#f2f2f2" FontWeight="Medium" FontSize="18" VerticalAlignment="Center" />
+                            <TextBlock Margin="5" Text="{Binding Path=name}" Foreground="#f2f2f2" FontWeight="Medium" FontSize="18" VerticalAlignment="Center" />
                         </Border>
                     </Popup>
-                    <fa5:ImageAwesome Name="LoadingBar" Foreground="#ffee5f" Grid.Row="0" Icon="Solid_Spinner" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center" Spin="True" SpinDuration="2"/>
+                    <fa5:ImageAwesome Name="LoadingBar" Foreground="#ffee5f" Grid.Row="0" Icon="Solid_Spinner" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Spin="True" SpinDuration="2"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -431,7 +431,7 @@
                     <Grid Name="MainGrid">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50"/>
-                            <RowDefinition Height="1.6*" MinHeight="100"/>
+                            <RowDefinition Height="1.6*" MinHeight="200"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
@@ -440,11 +440,13 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button FontSize="18" FontWeight="Medium" Name="LaunchButton" Margin="10,0,10,0" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="0" Content="Launch" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Launch_Click"/>
-                        <Button FontSize="18" FontWeight="Medium" Name="ConfigButton" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1" Content="Setup" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Setup_Click" />
+                        <Button FontSize="18" FontWeight="Medium" Name="CookButton" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1" Content="Cook" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Cook_Click" />
                         <Button FontSize="18" FontWeight="Medium" Name="ClearButton" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="2" Content="Clear Selection" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Clear_Click" />
-                        <Button FontSize="18" FontWeight="Medium" Name="UpdateButton" Margin="0,0,10,0"  Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="3" Content="Check for Updates" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Update_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Name="ConfigButton" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="3" Content="Setup" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Setup_Click" />
+                        <Button FontSize="18" FontWeight="Medium" Name="UpdateButton" Margin="0,0,10,0"  Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="4" Content="Check for Updates" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Update_Click"/>
 
                         <Grid Name="MiddleGrid" Grid.Row="1" Grid.ColumnSpan="8">
                             <Grid.ColumnDefinitions>
@@ -523,15 +525,15 @@
                                     <RowDefinition Height="1.5*"/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <Image Margin="3,3,10,5" Name="Preview" Grid.Row="0" Panel.ZIndex="2"/>
-                                <Image Margin="3,3,10,5" Name="PreviewBG" Grid.Row="0" Stretch="UniformToFill" Panel.ZIndex="1">
+                                <Image Margin="2,2,5,3" Name="Preview" Grid.Row="0" Panel.ZIndex="2"/>
+                                <Image Margin="2,2,5,3" Name="PreviewBG" Grid.Row="0" Stretch="UniformToFill" Panel.ZIndex="1">
                                     <Image.BitmapEffect>
                                         <BlurBitmapEffect Radius="40"/>
                                     </Image.BitmapEffect>
                                 </Image>
 
                                 <fa5:ImageAwesome Foreground="#ffee5f" Grid.Row="0" Icon="Solid_Spinner" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center" Spin="True" SpinDuration="2"/>
-                                <RichTextBox FontSize="12" Padding="10" Grid.Row="1" Margin="3,5,10,3" Name="DescriptionWindow" Foreground="#F2F2F2" Background="#202020" BorderBrush="#424242" ClipToBounds="False"
+                                <RichTextBox FontSize="12" Padding="3" Grid.Row="1" Margin="2,2,3,2" Name="DescriptionWindow" Foreground="#F2F2F2" Background="#202020" BorderBrush="#424242" ClipToBounds="False"
                      VerticalContentAlignment="Center" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Grid.ColumnSpan="5" IsDocumentEnabled="True"
                              FontWeight="Medium"/>
                             </Grid>
