@@ -56,6 +56,7 @@ namespace PizzaOven
             else if (running)
             {
                 MessageBox.Show("Pizza Oven is already running", "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                mw.Show();
                 mw.Close();
             }
         }
