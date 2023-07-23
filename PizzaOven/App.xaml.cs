@@ -54,7 +54,10 @@ namespace PizzaOven
             if (e.Args.Length > 1 && e.Args[0] == "-download")
                 new ModDownloader().Download(e.Args[1], running);
             else if (running)
+            {
                 MessageBox.Show("Pizza Oven is already running", "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                mw.Close();
+            }
         }
         private static void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
