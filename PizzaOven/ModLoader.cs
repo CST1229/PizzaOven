@@ -21,13 +21,15 @@ namespace PizzaOven
             foreach (var file in Directory.GetFiles($"{Global.config.ModsFolder}{Global.s}sound{Global.s}Desktop", "*", SearchOption.AllDirectories))
                 if (!banks.Contains(Path.GetFileName(file).ToLowerInvariant()))
                     File.Delete(file);
-            // Delete empty folders
             // Delete all dlls that aren't vanilla
             var dlls = new List<string>(new string[] { "fmod.dll", "fmod-gamemaker.dll", "fmodstudio.dll", "gameframe_x64.dll", "steam_api.dll",
             "steam_api64.dll", "steamworks_x64.dll"});
+            // Also delete mp4 files
             foreach (var file in Directory.GetFiles($"{Global.config.ModsFolder}", "*", SearchOption.TopDirectoryOnly))
-                if (Path.GetExtension(file).ToLowerInvariant() == ".dll" && !dlls.Contains(Path.GetFileName(file).ToLowerInvariant()))
+                if ((Path.GetExtension(file).ToLowerInvariant() == ".dll" && !dlls.Contains(Path.GetFileName(file).ToLowerInvariant()))
+                    || Path.GetExtension(file).ToLowerInvariant() == ".mp4")
                     File.Delete(file);
+            // Delete empty folders
             foreach (var directory in Directory.GetDirectories($"{Global.config.ModsFolder}{Global.s}sound{Global.s}Desktop"))
                 if (Directory.GetFiles(directory).Length == 0 && Directory.GetDirectories(directory).Length == 0)
                     Directory.Delete(directory, false);
@@ -156,6 +158,14 @@ namespace PizzaOven
                 }
                 // Extension .dll files
                 else if (extension.Equals(".dll", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // Copy over file to game folder
+                    File.Copy(modFile, $"{Global.config.ModsFolder}{Global.s}{Path.GetFileName(modFile)}", true);
+                    Global.logger.WriteLine($"Copied over {modFile} to game folder", LoggerType.Info);
+                    successes++;
+                }
+                // Video Files
+                else if (extension.Equals(".mp4", StringComparison.InvariantCultureIgnoreCase))
                 {
                     // Copy over file to game folder
                     File.Copy(modFile, $"{Global.config.ModsFolder}{Global.s}{Path.GetFileName(modFile)}", true);
