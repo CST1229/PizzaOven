@@ -17,6 +17,7 @@ namespace PizzaOven
         public static char s = Path.DirectorySeparatorChar;
         public static string assemblyLocation = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         public static ObservableCollection<Mod> ModList;
+        public static ObservableCollection<Installation> Installations;
         public static void UpdateConfig()
         {
             string configString = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });

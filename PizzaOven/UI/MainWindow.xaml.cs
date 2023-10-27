@@ -86,6 +86,23 @@ namespace PizzaOven
                 Global.config.ModList = new();
             Global.ModList = Global.config.ModList;
 
+            if (Global.config.Installations == null)
+            {
+                Global.config.Installations = new();
+                // Migrate configs
+                if (Global.config.ModsFolder != null && Global.config.Launcher != null)
+                {
+                    Global.config.Installations.Add(new Installation
+                    {
+                        folder = Global.config.ModsFolder,
+                        launcher = Global.config.Launcher,
+                        name = "Default",
+                        enabled = false,
+                    });
+                }
+            }
+            Global.Installations = Global.config.Installations;
+            SelectInstallation(Global.config.ModsFolder);
 
             Directory.CreateDirectory($@"{Global.assemblyLocation}{Global.s}Mods");
 
@@ -100,6 +117,8 @@ namespace PizzaOven
 
             ModsWatcher.EnableRaisingEvents = true;
 
+            InstallationGrid.ItemsSource = Global.Installations;
+
             defaultFlow.Blocks.Add(ConvertToFlowParagraph(defaultText));
             DescriptionWindow.Document = defaultFlow;
             var bitmap = new BitmapImage(new Uri("pack://application:,,,/PizzaOven;component/Assets/PizzaOvenPreview.png"));
@@ -108,6 +127,8 @@ namespace PizzaOven
 
             Global.logger.WriteLine("Checking for updates...", LoggerType.Info);
             ModGrid.IsEnabled = false;
+            InstallationGrid.IsEnabled = false;
+            AddInstallationButton.IsEnabled = false;
             ConfigButton.IsEnabled = false;
             LaunchButton.IsEnabled = false;
             ClearButton.IsEnabled = false;
@@ -121,7 +142,10 @@ namespace PizzaOven
             {
                 // Setup on launch if not setup yet
                 if (Setup.GameSetup())
+                {
+                    SelectInstallation(Global.config.ModsFolder);
                     LaunchButton.IsEnabled = true;
+                }
                 else
                 {
                     LaunchButton.IsEnabled = false;
@@ -163,6 +187,24 @@ namespace PizzaOven
                     }
                 });
             });
+        }
+
+        private void UpdateStats()
+        {
+            string installationName = "None";
+            if (Global.config.ModsFolder != null && Global.Installations != null)
+            {
+                foreach (Installation inst in Global.Installations)
+                {
+                    if (inst.folder == Global.config.ModsFolder)
+                    {
+                        installationName = inst.name;
+                        break;
+                    }
+                }
+            }
+            Stats.Text = $"{Global.ModList.Count} mods • {Directory.GetFiles($@"{Global.assemblyLocation}{Global.s}Mods", "*", SearchOption.AllDirectories).Length.ToString("N0")} files • " +
+            $"{StringConverters.FormatSize(new DirectoryInfo($@"{Global.assemblyLocation}{Global.s}Mods").GetDirectorySize())} • Installation: {installationName} • v{version}";
         }
 
         private async void Refresh()
@@ -216,33 +258,21 @@ namespace PizzaOven
                         DropBox.Visibility = Visibility.Visible;
                     else
                         DropBox.Visibility = Visibility.Collapsed;
-                    Stats.Text = $"{Global.ModList.Count} mods • {Directory.GetFiles($@"{Global.assemblyLocation}{Global.s}Mods", "*", SearchOption.AllDirectories).Length.ToString("N0")} files • " +
-                    $"{StringConverters.FormatSize(new DirectoryInfo($@"{Global.assemblyLocation}{Global.s}Mods").GetDirectorySize())} • v{version}";
+                    UpdateStats();
                 });
             });
             Global.config.ModList = Global.ModList;
             Global.logger.WriteLine("Refreshed!", LoggerType.Info);
         }
 
-        private async void Setup_Click(object sender, RoutedEventArgs e)
-        {
-            await Task.Run(() =>
-            {
-                if (Setup.GameSetup())
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        LaunchButton.IsEnabled = true;
-                    });
-                }
-            });
-        }
         private async void Launch_Click(object sender, RoutedEventArgs e)
         {
             // Build Mod Loadout
             if (Global.config.ModsFolder != null)
             {
                 ModGrid.IsEnabled = false;
+                InstallationGrid.IsEnabled = false;
+                AddInstallationButton.IsEnabled = false;
                 ConfigButton.IsEnabled = false;
                 LaunchButton.IsEnabled = false;
                 ClearButton.IsEnabled = false;
@@ -255,6 +285,8 @@ namespace PizzaOven
                 {
                     Global.logger.WriteLine($"Pizza Oven failed to cook the selected mod and will not launch the game", LoggerType.Error);
                     ModGrid.IsEnabled = true;
+                    InstallationGrid.IsEnabled = true;
+                    AddInstallationButton.IsEnabled = true;
                     ConfigButton.IsEnabled = true;
                     LaunchButton.IsEnabled = true;
                     ClearButton.IsEnabled = true;
@@ -263,6 +295,8 @@ namespace PizzaOven
                     return;
                 }
                 ModGrid.IsEnabled = true;
+                InstallationGrid.IsEnabled = true;
+                AddInstallationButton.IsEnabled = true;
                 ConfigButton.IsEnabled = true;
                 LaunchButton.IsEnabled = true;
                 ClearButton.IsEnabled = true;
@@ -592,6 +626,8 @@ namespace PizzaOven
         {
             Global.logger.WriteLine("Checking for updates...", LoggerType.Info);
             ModGrid.IsEnabled = false;
+            InstallationGrid.IsEnabled = false;
+            AddInstallationButton.IsEnabled = false;
             ConfigButton.IsEnabled = false;
             LaunchButton.IsEnabled = false;
             ClearButton.IsEnabled = false;
@@ -1090,6 +1126,16 @@ namespace PizzaOven
                 InitializeBrowser();
         }
 
+        private async void InitializeInstallationManager()
+        {
+            selected = true;
+        }
+        private void OnInstallationsTabSelected(object sender, RoutedEventArgs e)
+        {
+            if (!selected)
+                InitializeInstallationManager();
+        }
+
         private static int page = 1;
         private void DecrementPage(object sender, RoutedEventArgs e)
         {
@@ -1405,5 +1451,182 @@ namespace PizzaOven
             ModGrid_SearchBar.Clear();
         }
 
+        private async void Setup_Click(object sender, RoutedEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                if (Setup.GameSetup())
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        SelectInstallation(Global.config.ModsFolder);
+                        LaunchButton.IsEnabled = true;
+                    });
+                }
+            });
+        }
+        public bool InstallationExists(string path)
+        {
+            foreach (Installation inst in Global.Installations)
+            {
+                if (inst.folder == path)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private async void AddInstallation_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.DefaultExt = ".exe";
+            dialog.Filter = $"Executable File (*.exe)|*.exe";
+            dialog.Title = $"Select a PizzaTower.exe";
+            dialog.Multiselect = false;
+            dialog.InitialDirectory = Global.assemblyLocation;
+            dialog.ShowDialog();
+            if (String.IsNullOrEmpty(dialog.FileName))
+                return;
+            Global.config.ModsFolder = Path.GetDirectoryName(dialog.FileName);
+            Global.config.Launcher = dialog.FileName;
+            if (InstallationExists(Global.config.ModsFolder))
+            {
+                Global.UpdateConfig();
+                SelectInstallation(Global.config.ModsFolder);
+                return;
+            }
+
+            string installationName = "";
+            EditInstallationWindow ew = new EditInstallationWindow(null);
+            ew.ShowDialog();
+            if (String.IsNullOrEmpty(ew.newName))
+            {
+                return;
+            }
+            installationName = ew.newName;
+
+            Global.Installations.Add(new Installation
+            {
+                folder = Global.config.ModsFolder,
+                launcher = Global.config.Launcher,
+                name = installationName,
+                enabled = false,
+            });
+            Global.config.Installations = Global.Installations;
+            Global.UpdateConfig();
+            SelectInstallation(Global.config.ModsFolder);
+        }
+        private void SelectInstallation(string folder)
+        {
+            if (folder == null || Global.Installations == null)
+            {
+                if (Global.Installations != null)
+                    foreach (Installation inst in Global.Installations.ToList())
+                    {
+                        inst.enabled = false;
+                    }
+                if (Global.Installations != null && Global.Installations.Count > 0)
+                {
+                    Installation inst = Global.Installations[0];
+                    Global.config.ModsFolder = inst.folder;
+                    Global.config.Launcher = inst.launcher;
+                    inst.enabled = true;
+                    InstallationGrid.SelectedItem = inst;
+                    LaunchButton.IsEnabled = true;
+                }
+                else
+                {
+                    Global.config.ModsFolder = null;
+                    Global.config.Launcher = null;
+                    InstallationGrid.SelectedIndex = -1;
+                }
+                UpdateStats();
+                LaunchButton.IsEnabled = false;
+                return;
+            }
+            if (Global.Installations == null) return;
+            Installation installationToSelect = null;
+            foreach (Installation inst in Global.Installations.ToList())
+            {
+                inst.enabled = false;
+                if (inst.folder == folder)
+                {
+                    installationToSelect = inst;
+                }
+            }
+            if (installationToSelect == null && Global.Installations.Count > 0)
+            {
+                installationToSelect = Global.Installations[0];
+            }
+            if (installationToSelect == null)
+            {
+                UpdateStats();
+                LaunchButton.IsEnabled = false;
+                return;
+            }
+
+            installationToSelect.enabled = true;
+            InstallationGrid.ItemsSource = Global.Installations;
+            InstallationGrid.SelectedItem = installationToSelect;
+            InstallationGrid.ScrollIntoView(installationToSelect);
+            Global.config.ModsFolder = installationToSelect.folder;
+            Global.config.Launcher = installationToSelect.launcher;
+            LaunchButton.IsEnabled = true;
+            UpdateStats();
+        }
+        private void InstallationGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Installation inst = (Installation)InstallationGrid.SelectedItem;
+            if (inst != null)
+            {
+                SelectInstallation(inst.folder);
+            }
+            else
+            {
+                SelectInstallation(null);
+            }
+            Global.config.Installations = Global.Installations;
+            Global.UpdateConfig();
+        }
+
+        private async void RenameInstallation_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            var inst = button.DataContext as Installation;
+            EditInstallationWindow ew = new EditInstallationWindow(inst.name);
+            ew.ShowDialog();
+            if (!String.IsNullOrEmpty(ew.newName))
+            {
+                inst.name = ew.newName;
+            }
+            Global.UpdateConfig();
+        }
+        private async void RemoveInstallation_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            var inst = button.DataContext as Installation;
+            Global.Installations.Remove(inst);
+            SelectInstallation(null);
+            Global.config.Installations = Global.Installations;
+            Global.UpdateConfig();
+        }
+        private async void OpenInstallation_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            var inst = button.DataContext as Installation;
+            var folderName = inst.folder;
+            if (Directory.Exists(folderName))
+            {
+                try
+                {
+                    Process process = Process.Start("explorer.exe", folderName);
+                    Global.logger.WriteLine($@"Opened {folderName}.", LoggerType.Info);
+                }
+                catch (Exception ex)
+                {
+                    Global.logger.WriteLine($@"Couldn't open {folderName}. ({ex.Message})", LoggerType.Error);
+                }
+            }
+        }
     }
 }

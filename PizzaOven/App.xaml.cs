@@ -79,6 +79,8 @@ namespace PizzaOven
                 if (Current.MainWindow != null)
                 {
                     ((MainWindow)Current.MainWindow).ModGrid.IsEnabled = true;
+                    ((MainWindow)Current.MainWindow).InstallationGrid.IsEnabled = true;
+                    ((MainWindow)Current.MainWindow).AddInstallationButton.IsEnabled = true;
                     ((MainWindow)Current.MainWindow).ConfigButton.IsEnabled = true;
                     ((MainWindow)Current.MainWindow).LaunchButton.IsEnabled = true;
                     ((MainWindow)Current.MainWindow).ClearButton.IsEnabled = true;

@@ -61,7 +61,18 @@ namespace PizzaOven
             }
             Global.config.ModsFolder = Path.GetDirectoryName(defaultPath);
             Global.config.Launcher = defaultPath;
-            Global.UpdateConfig();
+            App.Current.Dispatcher.Invoke(() => {
+                if (!((MainWindow)App.Current.MainWindow).InstallationExists(Global.config.ModsFolder))
+                    Global.Installations.Add(new Installation
+                    {
+                        folder = Global.config.ModsFolder,
+                        launcher = Global.config.Launcher,
+                        name = "Default",
+                        enabled = false,
+                    });
+                Global.config.Installations = Global.Installations;
+                Global.UpdateConfig();
+            });
             Global.logger.WriteLine($"Setup completed for Pizza Tower!", LoggerType.Info);
             return true;
         }
