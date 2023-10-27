@@ -92,7 +92,7 @@ namespace PizzaOven
                     }
                     if (!success)
                     {
-                        Global.logger.WriteLine($"{modFile} wasn't able to patch any file. Ensure that either the mod xdelta patch or your game version is up to date", LoggerType.Error);
+                        Global.logger.WriteLine($"{modFile} wasn't able to patch any file. Ensure that either the mod xdelta patch is up to date or your game version is on the correct version (older mods may require older versions of the game)", LoggerType.Error);
                         errors++;
                     }
                 }

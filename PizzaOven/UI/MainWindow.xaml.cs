@@ -130,6 +130,7 @@ namespace PizzaOven
             InstallationGrid.IsEnabled = false;
             AddInstallationButton.IsEnabled = false;
             ConfigButton.IsEnabled = false;
+            ConfigButton2.IsEnabled = false;
             LaunchButton.IsEnabled = false;
             ClearButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;
@@ -274,6 +275,7 @@ namespace PizzaOven
                 InstallationGrid.IsEnabled = false;
                 AddInstallationButton.IsEnabled = false;
                 ConfigButton.IsEnabled = false;
+                ConfigButton2.IsEnabled = false;
                 LaunchButton.IsEnabled = false;
                 ClearButton.IsEnabled = false;
                 UpdateButton.IsEnabled = false;
@@ -288,6 +290,7 @@ namespace PizzaOven
                     InstallationGrid.IsEnabled = true;
                     AddInstallationButton.IsEnabled = true;
                     ConfigButton.IsEnabled = true;
+                    ConfigButton2.IsEnabled = true;
                     LaunchButton.IsEnabled = true;
                     ClearButton.IsEnabled = true;
                     UpdateButton.IsEnabled = true;
@@ -298,6 +301,7 @@ namespace PizzaOven
                 InstallationGrid.IsEnabled = true;
                 AddInstallationButton.IsEnabled = true;
                 ConfigButton.IsEnabled = true;
+                ConfigButton2.IsEnabled = true;
                 LaunchButton.IsEnabled = true;
                 ClearButton.IsEnabled = true;
                 UpdateButton.IsEnabled = true;
@@ -629,6 +633,7 @@ namespace PizzaOven
             InstallationGrid.IsEnabled = false;
             AddInstallationButton.IsEnabled = false;
             ConfigButton.IsEnabled = false;
+            ConfigButton2.IsEnabled = false;
             LaunchButton.IsEnabled = false;
             ClearButton.IsEnabled = false;
             UpdateButton.IsEnabled = false;

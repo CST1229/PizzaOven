@@ -846,8 +846,10 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button FontSize="18" FontWeight="Medium" Name="AddInstallationButton" Margin="10,0,10,0" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="0" Content="Add Installation" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="AddInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Name="ConfigButton2" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1" Content="Intitial Setup" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Setup_Click" />
 
                         <Grid Name="InstallationsListGrid" Grid.Row="1" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
