@@ -27,7 +27,10 @@ namespace PizzaOven
             if (!Directory.Exists(path))
             {
                 main.ModGrid.IsEnabled = true;
+                main.InstallationGrid.IsEnabled = true;
+                main.AddInstallationButton.IsEnabled = true;
                 main.ConfigButton.IsEnabled = true;
+                main.ConfigButton2.IsEnabled = true;
                 main.LaunchButton.IsEnabled = true;
                 main.CookButton.IsEnabled = true;
                 main.ClearButton.IsEnabled = true;
@@ -94,7 +97,10 @@ namespace PizzaOven
             {
                 Global.logger.WriteLine("No updates available.", LoggerType.Info);
                 main.ModGrid.IsEnabled = true;
+                main.InstallationGrid.IsEnabled = true;
+                main.AddInstallationButton.IsEnabled = true;
                 main.ConfigButton.IsEnabled = true;
+                main.ConfigButton2.IsEnabled = true;
                 main.LaunchButton.IsEnabled = true;
                 main.CookButton.IsEnabled = true;
                 main.ClearButton.IsEnabled = true;
@@ -119,7 +125,10 @@ namespace PizzaOven
                         {
                             Global.logger.WriteLine($"{requestUrl} {e.Message}", LoggerType.Error);
                             main.ModGrid.IsEnabled = true;
+                            main.InstallationGrid.IsEnabled = true;
+                            main.AddInstallationButton.IsEnabled = true;
                             main.ConfigButton.IsEnabled = true;
+                            main.ConfigButton2.IsEnabled = true;
                             main.LaunchButton.IsEnabled = true;
                             main.CookButton.IsEnabled = true;
                             main.ClearButton.IsEnabled = true;
@@ -154,7 +163,10 @@ namespace PizzaOven
                 Global.logger.WriteLine("Done checking for updates!", LoggerType.Info);
 
             main.ModGrid.IsEnabled = true;
+            main.InstallationGrid.IsEnabled = true;
+            main.AddInstallationButton.IsEnabled = true;
             main.ConfigButton.IsEnabled = true;
+            main.ConfigButton2.IsEnabled = true;
             main.LaunchButton.IsEnabled = true;
             main.CookButton.IsEnabled = true;
             main.ClearButton.IsEnabled = true;

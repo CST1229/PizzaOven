@@ -8,7 +8,7 @@
         Background="#131313"
         Title="Pizza Oven" SizeChanged="OnResize"
         mc:Ignorable="d" Closing="Window_Closing" WindowStartupLocation="CenterScreen"
-        Height="750" Width="1280" MinHeight="750" MinWidth="1280" Loaded="WindowLoaded" KeyDown="Window_KeyDown">
+        Height="750" Width="1280" MinHeight="400" MinWidth="1000" Loaded="WindowLoaded" KeyDown="Window_KeyDown">
     <Window.Resources>
         <FontFamily x:Key="Monospace">../Assets/#Roboto Mono</FontFamily>
         <DataTemplate x:Key="BrowserTemplate">
@@ -378,6 +378,41 @@
                         </Border>
                     </Popup>
                     <fa5:ImageAwesome Name="LoadingBar" Foreground="#ffee5f" Grid.Row="0" Icon="Solid_Spinner" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" Spin="True" SpinDuration="2"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="InstallationTemplate">
+            <Border CornerRadius="5" Margin="5">
+                <Border.BorderBrush>
+                    <SolidColorBrush Color="#101010" Opacity="0.75"/>
+                </Border.BorderBrush>
+                <Border.Background>
+                    <SolidColorBrush Color="#101010" Opacity="0.75"/>
+                </Border.Background>
+                <Grid VerticalAlignment="Center" x:Name="GridItem" Margin="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="50" />
+                    </Grid.RowDefinitions>
+
+                    <Rectangle Height="90" Stretch="UniformToFill" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="Title" Margin="5" Grid.Row="0" FontWeight="Medium" FontSize="24" TextTrimming="WordEllipsis" Background="Transparent" VerticalAlignment="Center"  Foreground="#f2f2f2" Text="{Binding Path=name}"/>
+                    <Grid VerticalAlignment="Stretch" Margin="3" Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="Path" Margin="5" FontWeight="Medium" FontSize="16" TextTrimming="WordEllipsis" Background="Transparent" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#aaaaaa" Text="{Binding Path=launcher}"/>
+                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="1" Content="Remove" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="RemoveInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="2" Content="Open Folder" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="OpenInstallation_Click"/>
+                    </Grid>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -802,6 +837,51 @@
                         </ListView>
                     </Border>
                 </Grid>
+            </TabItem>
+            <TabItem Name="InstallationManager" Selector.Selected="OnInstallationsTabSelected" FontSize="18" HorizontalAlignment="Center" Header="Installations">
+                <TabItem.Content>
+                    <Grid Name="InstallationsTabGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="10"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button FontSize="18" FontWeight="Medium" Name="AddInstallationButton" Margin="10,0,10,0" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="0" Content="Add Installation" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="AddInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Name="ConfigButton2" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1" Content="Intitial Setup" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Setup_Click" />
+
+                        <Grid Name="InstallationsListGrid" Grid.Row="1" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Border CornerRadius="5" Grid.Row="0" Margin="10,5,3,3">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="Black" Opacity="0.75"/>
+                                </Border.BorderBrush>
+                                <Border.Background>
+                                    <SolidColorBrush Color="Black" Opacity="0.75"/>
+                                </Border.Background>
+                                <ListView Margin="5" Panel.ZIndex="1" Style="{StaticResource ListviewStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top" SelectionMode="Single"
+                                          ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" BorderBrush="Transparent" Name="InstallationGrid"
+                                          SelectionChanged="InstallationGrid_SelectionChanged" ItemTemplate="{StaticResource InstallationTemplate}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True">
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical"
+                                                        VerticalAlignment="Top"
+                                                        HorizontalAlignment="Stretch"/>
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
+                                </ListView>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </TabItem.Content>
             </TabItem>
         </TabControl>
     </Grid>

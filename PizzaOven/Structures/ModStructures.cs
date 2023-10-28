@@ -25,6 +25,13 @@ namespace PizzaOven
         public Uri homepage { get; set; }
         public DateTime? lastupdate { get; set; }
     }
+    public class Installation
+    {
+        public string folder { get; set; }
+        public string launcher { get; set; }
+        public string name { get; set; }
+        public bool enabled { get; set; }
+    }
     public class Config
     {
         public string Launcher { get; set; }
@@ -38,6 +45,7 @@ namespace PizzaOven
         public double? Height { get; set; }
         public double? Width { get; set; }
         public bool Maximized { get; set; }
+        public ObservableCollection<Installation> Installations { get; set; }
     }
     public class Choice
     {
