@@ -30,7 +30,6 @@ namespace PizzaOven
         public string folder { get; set; }
         public string launcher { get; set; }
         public string name { get; set; }
-        public bool enabled { get; set; }
     }
     public class Config
     {
@@ -46,6 +45,8 @@ namespace PizzaOven
         public double? Width { get; set; }
         public bool Maximized { get; set; }
         public ObservableCollection<Installation> Installations { get; set; }
+        public bool DownloadRememberPassword { get; set; }
+        public bool DownloadAutoMode { get; set; }
     }
     public class Choice
     {

@@ -1,0 +1,65 @@
+﻿<Window x:Class="PizzaOven.VersionDownloadManual"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PizzaOven"
+        mc:Ignorable="d"
+        ResizeMode="CanMinimize"
+        Background="#202020" WindowStartupLocation="CenterScreen"
+        FontSize="16"
+        Title="Download Version Manually" Height="350" Width="580">
+    <Window.Resources>
+        <FontFamily x:Key="Monospace">../Assets/#Roboto Mono</FontFamily>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="15" Orientation="Vertical" Grid.Row="0">
+            <TextBlock
+                Text="Open the Steam console, then paste the following command into it to download this version."
+                Foreground="#f2f2f2" TextWrapping="Wrap" Margin="0,0,0,10"
+            />
+            <Button x:Name="OpenSteam" Content="Open Steam Console" FontWeight="Medium" Padding="5,3" Margin="0,0,0,5"
+                    HorizontalAlignment="Stretch" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="OpenSteam_Click"/>
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox BorderThickness="0" IsReadOnly="True"
+                    Grid.Column="0" x:Name="DownloadCommand"
+                    Text="download_depot 2231450 2231451 2053390981574454033"
+                    FontSize="15"
+                    Foreground="#f2f2f2" Background="Black" FontFamily="{StaticResource Monospace}" TextWrapping="Wrap" Padding="5"
+                />
+                <Button x:Name="Copy" Content="Copy" Grid.Column="1" FontWeight="Medium" Padding="10 0" VerticalAlignment="Stretch"
+                    HorizontalAlignment="Right" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Copy_Click"/>
+            </Grid>
+            <TextBlock
+                Text="Click &quot;Done&quot; after the download finishes."
+                Foreground="#f2f2f2" TextWrapping="Wrap" Margin="0,0,0,15"
+            />
+            <TextBlock
+                x:Name="NoPathWarning"
+                Text="NOTE: The depot installation path was not found! After clicking Done, Pizza Oven will prompt you to pick it. The Steam console will print the required folder path for you after it's done downloading."
+                Foreground="#f2f2f2" TextWrapping="Wrap" Margin="0,0,0,10"
+            />
+        </StackPanel>
+        <Grid Margin="10" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="AutoMode" Content="Download Automatically..." Grid.Column="0" FontWeight="Medium" Padding="15 5"
+                    HorizontalAlignment="Left" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="AutoMode_Click"/>
+            <Button x:Name="Cancel" Content="Cancel" Grid.Column="1" FontWeight="Medium" Padding="15 5" Margin="0 0 15 0"
+                    HorizontalAlignment="Right" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Cancel_Click"/>
+            <Button x:Name="Done" Content="Done" Grid.Column="2" FontWeight="Medium" Padding="15 5"
+                    HorizontalAlignment="Right" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Done_Click"/>
+        </Grid>
+    </Grid>
+</Window>

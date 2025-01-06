@@ -408,10 +408,14 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="Path" Margin="5" FontWeight="Medium" FontSize="16" TextTrimming="WordEllipsis" Background="Transparent" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#aaaaaa" Text="{Binding Path=launcher}"/>
-                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="1" Content="Remove" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="RemoveInstallation_Click"/>
-                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="2" Content="Open Folder" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="OpenInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="1" Content="Rename..." Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="RenameInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="2" Content="Change .exe..." Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="ChangeInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="3" Content="Remove" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="RemoveInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Padding="5,10" Margin="5,10,5,10" VerticalAlignment="Center" Height="50" HorizontalAlignment="Right" Grid.Column="4" Content="Open Folder" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="OpenInstallation_Click"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -421,7 +425,7 @@
         <StackPanel Panel.ZIndex="3" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="5">
             <TextBox BorderThickness="0" FontSize="18" Margin="5" Background="Transparent" BorderBrush="Transparent" IsReadOnly="True" Foreground="#f2f2f2" FontWeight="Medium" Name="Stats" />
         </StackPanel>
-        <TabControl Grid.ColumnSpan="5" Background="#202020" BorderBrush="#353535">
+        <TabControl x:Name="Tabs" Grid.ColumnSpan="5" Background="#202020" BorderBrush="#353535">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="Template">
@@ -497,7 +501,7 @@
                             </Grid>
                             <Grid Name="ModGridSearchBarGrid" Panel.ZIndex="2" Margin="10,5,3,5" Height="35" VerticalAlignment="Center">
                                 <TextBox Margin="0,0,35,0" Background="#353535" Foreground="#f2f2f2" BorderBrush="#353535" x:Name="ModGrid_SearchBar" KeyDown="ModGrid_SearchBar_KeyDown" Padding="5" TextWrapping="NoWrap"/>
-                                <TextBlock Padding="8,5,5,5" Foreground="#f2f2f2" Panel.ZIndex="3" IsHitTestVisible="False" Height="35"  HorizontalAlignment="Left" Text="Search..." VerticalAlignment="Center">
+                                <TextBlock Padding="8,5,5,5" Opacity="0.5" Foreground="#f2f2f2" Panel.ZIndex="3" IsHitTestVisible="False" Height="35"  HorizontalAlignment="Left" Text="Search..." VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
@@ -736,7 +740,7 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     <TextBox Margin="5,0,35,0" Background="#353535" Foreground="#f2f2f2" BorderBrush="#353535" Padding="4,0,0,0" Grid.Column="4" IsEnabled="False" KeyDown="SearchBar_KeyDown" Name="SearchBar" Height="35" MinWidth="200" HorizontalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                    <TextBlock Margin="5,0,35,0" Padding="7,5.5,3,3" Grid.Column="4" IsHitTestVisible="False" Height="35" MinWidth="200" HorizontalAlignment="Left" Text="Search..." VerticalAlignment="Center" Foreground="#f2f2f2">
+                    <TextBlock Margin="5,0,35,0" Opacity="0.5" Padding="7,5.5,3,3" Grid.Column="4" IsHitTestVisible="False" Height="35" MinWidth="200" HorizontalAlignment="Left" Text="Search..." VerticalAlignment="Center" Foreground="#f2f2f2">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -836,7 +840,7 @@
                     </Border>
                 </Grid>
             </TabItem>
-            <TabItem Name="InstallationManager" Selector.Selected="OnInstallationsTabSelected" FontSize="18" HorizontalAlignment="Center" Header="Installations">
+            <TabItem Name="InstallationManager" FontSize="18" HorizontalAlignment="Center" Header="Installations">
                 <TabItem.Content>
                     <Grid Name="InstallationsTabGrid">
                         <Grid.RowDefinitions>
@@ -847,11 +851,13 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button FontSize="18" FontWeight="Medium" Name="AddInstallationButton" Margin="10,0,10,0" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="0" Content="Add Installation" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="AddInstallation_Click"/>
-                        <Button FontSize="18" FontWeight="Medium" Name="ConfigButton2" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1" Content="Intitial Setup" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Setup_Click" />
+                        <Button FontSize="18" FontWeight="Medium" Name="AddInstallationButton" Margin="10,0,10,0" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="0" Content="Add Installation..." Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="AddInstallation_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Name="DownloadVersionsButton" Margin="10,0,10,0" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Column="1" Content="Download Versions..." Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="VersionDownloader_Click"/>
+                        <Button FontSize="18" FontWeight="Medium" Name="ConfigButton2" Margin="10,0,10,0" Height="35" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="2" Content="Intitial Setup" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="Setup_Click" />
 
-                        <Grid Name="InstallationsListGrid" Grid.Row="1" Grid.ColumnSpan="2">
+                        <Grid Name="InstallationsListGrid" Grid.Row="1" Grid.ColumnSpan="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
@@ -867,7 +873,7 @@
                                 </Border.Background>
                                 <ListView Margin="5" Panel.ZIndex="1" Style="{StaticResource ListviewStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top" SelectionMode="Single"
                                           ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" BorderBrush="Transparent" Name="InstallationGrid"
-                                          SelectionChanged="InstallationGrid_SelectionChanged" ItemTemplate="{StaticResource InstallationTemplate}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True">
+                                          SelectionChanged="InstallationGrid_SelectionChanged" ItemTemplate="{StaticResource InstallationTemplate}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" d:ItemsSource="{d:SampleData ItemCount=5}">
                                     <ListView.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Orientation="Vertical"

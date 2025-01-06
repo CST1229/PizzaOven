@@ -111,8 +111,8 @@ namespace PizzaOven
             {
                 string responseString = await client.GetStringAsync(URL);
                 response = JsonSerializer.Deserialize<GameBananaAPIV4>(responseString);
-                fileName = response.Files.Where(x => x.Id == DL_ID).ToArray()[0].FileName;
-                fileDescription = response.Files.Where(x => x.Id == DL_ID).ToArray()[0].Description;
+                fileName = response.Files.Where(x => (string)x.Id == DL_ID).ToArray()[0].FileName;
+                fileDescription = response.Files.Where(x => (string)x.Id == DL_ID).ToArray()[0].Description;
                 return true;
             }
             catch (Exception e)
@@ -169,6 +169,8 @@ namespace PizzaOven
                     ArchiveDestination = $@"{Global.assemblyLocation}{Global.s}Mods{Global.s}{string.Concat(record.Title.Split(Path.GetInvalidFileNameChars()))} ({counter})";
                     ++counter;
                 }
+                bool directoryExists = Directory.Exists(ArchiveDestination);
+                Directory.CreateDirectory(ArchiveDestination);
                 if (File.Exists(_ArchiveSource))
                 {
                     try
@@ -219,18 +221,12 @@ namespace PizzaOven
                     catch (Exception e)
                     {
                         MessageBox.Show($"Couldn't extract {fileName}: {e.Message}", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        if (!directoryExists) Directory.Delete(ArchiveDestination);
+                        return;
                     }
                 }
-                // Check if folder output folder exists, if not nothing was extracted
-                if (!Directory.Exists(ArchiveDestination))
-                {
-                    MessageBox.Show($"Didn't extract {fileName} due to improper format", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else
-                {
-                    // Only delete if successfully extracted
-                    File.Delete(_ArchiveSource);
-                }
+                // Only delete if successfully extracted
+                File.Delete(_ArchiveSource);
             });
 
         }

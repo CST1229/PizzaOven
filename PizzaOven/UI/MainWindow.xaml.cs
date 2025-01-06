@@ -47,6 +47,8 @@ namespace PizzaOven
             Global.logger = new Logger(ConsoleWindow);
             Global.config = new();
 
+            Directory.CreateDirectory($@"{Global.assemblyLocation}{Global.s}Mods");
+
             // Get Version Number
             var PizzaOvenVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             version = PizzaOvenVersion.Substring(0, PizzaOvenVersion.LastIndexOf('.'));
@@ -96,15 +98,12 @@ namespace PizzaOven
                     {
                         folder = Global.config.ModsFolder,
                         launcher = Global.config.Launcher,
-                        name = "Default",
-                        enabled = false,
+                        name = "Default"
                     });
                 }
             }
             Global.Installations = Global.config.Installations;
             SelectInstallation(Global.config.ModsFolder);
-
-            Directory.CreateDirectory($@"{Global.assemblyLocation}{Global.s}Mods");
 
             // Watch mods folder to detect
             ModsWatcher = new FileSystemWatcher($@"{Global.assemblyLocation}{Global.s}Mods");
@@ -870,7 +869,7 @@ namespace PizzaOven
             ImageRight.IsEnabled = true;
             BigImageLeft.IsEnabled = true;
             BigImageRight.IsEnabled = true;
-            imageCount = item.Media.Where(x => x.Type == "image").ToList().Count;
+            imageCount = item.Media.Where(x => x.Type == "image" || x.Type == "screenshot").ToList().Count;
             imageCounter = 0;
             if (imageCount > 0)
             {
@@ -966,7 +965,7 @@ namespace PizzaOven
                 CaptionText.Visibility = Visibility.Collapsed;
             }
         }
-        private static bool selected = false;
+        private static bool modBrowserSelected = false;
 
         private static Dictionary<TypeFilter, List<GameBananaCategory>> cats = new();
 
@@ -1100,7 +1099,7 @@ namespace PizzaOven
                             {
                                 response = JsonSerializer.Deserialize<List<GameBananaCategory>>(responseString);
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 LoadingBar.Visibility = Visibility.Collapsed;
                                 ErrorPanel.Visibility = Visibility.Visible;
@@ -1123,22 +1122,12 @@ namespace PizzaOven
             FilterBox.SelectedIndex = 1;
             filterSelect = false;
             RefreshFilter();
-            selected = true;
+            modBrowserSelected = true;
         }
         private void OnBrowserTabSelected(object sender, RoutedEventArgs e)
         {
-            if (!selected)
+            if (!modBrowserSelected)
                 InitializeBrowser();
-        }
-
-        private async void InitializeInstallationManager()
-        {
-            selected = true;
-        }
-        private void OnInstallationsTabSelected(object sender, RoutedEventArgs e)
-        {
-            if (!selected)
-                InitializeInstallationManager();
         }
 
         private static int page = 1;
@@ -1154,7 +1143,7 @@ namespace PizzaOven
         }
         private void BrowserRefresh(object sender, RoutedEventArgs e)
         {
-            if (!selected)
+            if (!modBrowserSelected)
                 InitializeBrowser();
             else
                 RefreshFilter();
@@ -1193,6 +1182,16 @@ namespace PizzaOven
                 LoadingBar.Visibility = Visibility.Collapsed;
                 ErrorPanel.Visibility = Visibility.Visible;
                 BrowserRefreshButton.Visibility = Visibility.Visible;
+                CatBox.IsEnabled = true;
+                SubCatBox.IsEnabled = true;
+                TypeBox.IsEnabled = true;
+                FilterBox.IsEnabled = true;
+                PageBox.IsEnabled = true;
+                PerPageBox.IsEnabled = true;
+                SearchBar.IsEnabled = true;
+                SearchButton.IsEnabled = true;
+                NSFWCheckbox.IsEnabled = true;
+                ClearCacheButton.IsEnabled = true;
                 if (FeedGenerator.exception.Message.Contains("JSON tokens"))
                 {
                     BrowserMessage.Text = "Uh oh! Pizza Oven failed to deserialize the GameBanana feed.";
@@ -1481,7 +1480,7 @@ namespace PizzaOven
             }
             return false;
         }
-        private async void AddInstallation_Click(object sender, RoutedEventArgs e)
+        private void AddInstallation_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.DefaultExt = ".exe";
@@ -1514,28 +1513,38 @@ namespace PizzaOven
             {
                 folder = Global.config.ModsFolder,
                 launcher = Global.config.Launcher,
-                name = installationName,
-                enabled = false,
+                name = installationName
             });
             Global.config.Installations = Global.Installations;
             Global.UpdateConfig();
             SelectInstallation(Global.config.ModsFolder);
         }
+        private void VersionDownloader_Click(object sender, RoutedEventArgs e)
+        {
+            VersionDownloader vd = new();
+            vd.JumpToInstallation = SelectInstallation;
+            vd.CreateInstallation = (folder, launcher, version) => {
+                Global.Installations.Add(new Installation
+                {
+                    folder = folder,
+                    launcher = launcher,
+                    name = version
+                });
+                Global.config.Installations = Global.Installations;
+                Global.UpdateConfig();
+                SelectInstallation(folder);
+            };
+            vd.ShowDialog();
+        }
         private void SelectInstallation(string folder)
         {
             if (folder == null || Global.Installations == null)
             {
-                if (Global.Installations != null)
-                    foreach (Installation inst in Global.Installations.ToList())
-                    {
-                        inst.enabled = false;
-                    }
                 if (Global.Installations != null && Global.Installations.Count > 0)
                 {
                     Installation inst = Global.Installations[0];
                     Global.config.ModsFolder = inst.folder;
                     Global.config.Launcher = inst.launcher;
-                    inst.enabled = true;
                     InstallationGrid.SelectedItem = inst;
                     LaunchButton.IsEnabled = true;
                 }
@@ -1553,7 +1562,6 @@ namespace PizzaOven
             Installation installationToSelect = null;
             foreach (Installation inst in Global.Installations.ToList())
             {
-                inst.enabled = false;
                 if (inst.folder == folder)
                 {
                     installationToSelect = inst;
@@ -1570,7 +1578,6 @@ namespace PizzaOven
                 return;
             }
 
-            installationToSelect.enabled = true;
             InstallationGrid.ItemsSource = Global.Installations;
             InstallationGrid.SelectedItem = installationToSelect;
             InstallationGrid.ScrollIntoView(installationToSelect);
@@ -1594,7 +1601,18 @@ namespace PizzaOven
             Global.UpdateConfig();
         }
 
-        private async void RenameInstallation_Click(object sender, RoutedEventArgs e)
+        // Remove and readd an installation in the list so it gets updated
+        private void UpdateInstallation(Installation inst)
+        {
+            var index = Global.Installations.IndexOf(inst);
+            if (index < 0) return;
+            var selected = InstallationGrid.SelectedItem;
+            Global.Installations.RemoveAt(index);
+            Global.Installations.Insert(index, inst);
+            InstallationGrid.SelectedItem = selected;
+        }
+
+        private void RenameInstallation_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
             var inst = button.DataContext as Installation;
@@ -1604,18 +1622,47 @@ namespace PizzaOven
             {
                 inst.name = ew.newName;
             }
+            Global.config.Installations = Global.Installations;
             Global.UpdateConfig();
+            UpdateInstallation(inst);
         }
-        private async void RemoveInstallation_Click(object sender, RoutedEventArgs e)
+        private void ChangeInstallation_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
             var inst = button.DataContext as Installation;
+
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.DefaultExt = ".exe";
+            dialog.Filter = $"Executable File (*.exe)|*.exe";
+            dialog.Title = $"Select a PizzaTower.exe";
+            dialog.Multiselect = false;
+            dialog.InitialDirectory = Global.assemblyLocation;
+            dialog.ShowDialog();
+            if (String.IsNullOrEmpty(dialog.FileName))
+                return;
+
+            inst.folder = Path.GetDirectoryName(dialog.FileName);
+            inst.launcher = dialog.FileName;
+            Global.config.Installations = Global.Installations;
+            Global.UpdateConfig();
+            UpdateInstallation(inst);
+        }
+        private void RemoveInstallation_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            var inst = button.DataContext as Installation;
+            if (!(Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)))
+            {
+                var dialogResult = MessageBox.Show($@"Are you sure you want to remove {inst.name}?" + Environment.NewLine +
+                    @"This will not delete the installation's folder; to do that, click the ""Open Folder"" button and delete the folder from there.", $@"Deleting {inst.name}: Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (dialogResult != MessageBoxResult.Yes) return;
+            }
             Global.Installations.Remove(inst);
             SelectInstallation(null);
             Global.config.Installations = Global.Installations;
             Global.UpdateConfig();
         }
-        private async void OpenInstallation_Click(object sender, RoutedEventArgs e)
+        private void OpenInstallation_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
             var inst = button.DataContext as Installation;
