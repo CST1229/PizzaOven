@@ -46,6 +46,8 @@ namespace PizzaOven
         public double? Width { get; set; }
         public bool Maximized { get; set; }
         public ObservableCollection<Installation> Installations { get; set; }
+        public bool DownloadRememberPassword { get; set; }
+        public bool DownloadAutoMode { get; set; }
     }
     public class Choice
     {

@@ -35,7 +35,7 @@ namespace PizzaOven
                     }
             // Delete all dlls that aren't vanilla
             var dlls = new List<string>(new string[] { "fmod.dll", "fmod-gamemaker.dll", "fmodstudio.dll", "gameframe_x64.dll", "steam_api.dll",
-            "steam_api64.dll", "steamworks_x64.dll"});
+            "steam_api64.dll", "steamworks_x64.dll", "_steam_api64.dll"});
             // Also delete mp4 files
             foreach (var file in Directory.GetFiles($"{Global.config.ModsFolder}", "*", SearchOption.TopDirectoryOnly))
                 if ((Path.GetExtension(file).ToLowerInvariant() == ".dll" && !dlls.Contains(Path.GetFileName(file).ToLowerInvariant()))

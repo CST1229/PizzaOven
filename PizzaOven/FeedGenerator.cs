@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.Json;
+using System.Net;
 using System.Net.Http;
 using System.Xml.Linq;
 using System.Threading.Tasks;
@@ -105,7 +106,7 @@ namespace PizzaOven
         private static string GenerateUrl(int page, TypeFilter type, FeedFilter filter, GameBananaCategory category, GameBananaCategory subcategory, int perPage, bool nsfw, string search)
         {
             // Base
-            var url = "https://gamebanana.com/apiv6/";
+            var url = "https://gamebanana.com/apiv8/";
             switch (type)
             {
                 case TypeFilter.Mods:
@@ -120,8 +121,8 @@ namespace PizzaOven
             }
             // Different starting endpoint if requesting all mods instead of specific category
             if (search != null)
-                url += $"ByName?_sName=*{search}*&_idGameRow=7692&";
-            else if (category.ID != null)
+                url += $"ByName?_sName=*{WebUtility.UrlEncode(search)}*&_idGameRow=7692&";
+            else if (category?.ID != null)
                 url += "ByCategory?";
             else
                 url += $"ByGame?_aGameRowIds[]=7692&";
@@ -144,9 +145,9 @@ namespace PizzaOven
                     break;
             }
             // Choose subcategory or category
-            if (subcategory.ID != null)
+            if (subcategory?.ID != null)
                 url += $"&_aCategoryRowIds[]={subcategory.ID}";
-            else if (category.ID != null)
+            else if (category?.ID != null)
                 url += $"&_aCategoryRowIds[]={category.ID}";
             
             // Get page number

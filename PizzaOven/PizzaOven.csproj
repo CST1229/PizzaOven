@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>PizzaOven</RootNamespace>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>Assets\PizzaOvenIcon.ico</ApplicationIcon>
     <AssemblyName>PizzaOven</AssemblyName>
     <AssemblyVersion>1.0.14.0</AssemblyVersion>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <ApplicationIcon>Assets\PizzaOvenIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +17,7 @@
     <None Remove="Assets\PizzaOvenPreview.png" />
     <None Remove="Assets\RobotoMono-Regular.ttf" />
     <None Remove="Dependencies\XDelta_Common_Checksum.txt" />
+    <None Remove="Dependencies\Pizza_Tower_Versions.json" />
     <None Remove="GameBanana.png" />
   </ItemGroup>
 
@@ -23,13 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FontAwesome5" Version="2.1.0" />
-    <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
-    <PackageReference Include="Onova" Version="2.6.2" />
-    <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
-    <PackageReference Include="SharpCompress" Version="0.28.1" />
-    <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
-    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    <PackageReference Include="FontAwesome5" Version="2.1.11" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
+    <PackageReference Include="Onova" Version="2.6.12" />
+    <PackageReference Include="SevenZipExtractor" Version="1.0.19" />
+    <PackageReference Include="SharpCompress" Version="0.38.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +39,9 @@
     <Resource Include="Assets\PizzaOvenPreview.png" />
     <Resource Include="Assets\RobotoMono-Regular.ttf" />
     <EmbeddedResource Include="Dependencies\XDelta_Common_Checksum.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dependencies\Pizza_Tower_Versions.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -52,6 +56,12 @@
     <None Update="Dependencies\xdelta.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+	<None Update="Dependencies\DepotDownloader.exe">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Update="Dependencies\DepotDownloader.LICENSE.txt">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
   </ItemGroup>
 
   <ItemGroup>

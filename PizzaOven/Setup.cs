@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows;
 
 namespace PizzaOven
@@ -35,21 +34,18 @@ namespace PizzaOven
                     if (!String.IsNullOrEmpty(key.GetValue("InstallLocation") as string))
                         defaultPath = $"{key.GetValue("InstallLocation") as string}{Global.s}PizzaTower.exe";
             }
-            catch (Exception e)
-            {
-            }
+            catch {}
             if (!File.Exists(defaultPath))
             {
                 Global.logger.WriteLine($"Couldn't find install path in registry, select path to exe instead", LoggerType.Warning);
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.DefaultExt = ".exe";
-                dialog.Filter = $"Executable File (PizzaTower.exe)|PizzaTower.exe";
+                dialog.Filter = $"Executable Files|*.exe";
                 dialog.Title = $"Select PizzaTower.exe from your Steam Install folder";
                 dialog.Multiselect = false;
                 dialog.InitialDirectory = Global.assemblyLocation;
                 dialog.ShowDialog();
-                if (!String.IsNullOrEmpty(dialog.FileName)
-                    && Path.GetFileName(dialog.FileName).Equals("PizzaTower.exe", StringComparison.InvariantCultureIgnoreCase))
+                if (!String.IsNullOrEmpty(dialog.FileName))
                     defaultPath = dialog.FileName;
                 else if (!String.IsNullOrEmpty(dialog.FileName))
                 {
