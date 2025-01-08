@@ -82,7 +82,7 @@ namespace PizzaOven
             if (!File.Exists(ptExe))
             {
                 string username = "marcsiebes3"; // TODO: allow user input
-                if (!DownloadDepot(PTVersion.AppID, PTVersion.DepotID, version, username, version.DownloadPath)) return;
+                if (!DownloadDepot(PTVersion.AppID, PTVersion.DepotID, version.ManifestID, username, version.DownloadPath)) return;
 
                 // Disable Steam support so that launching the game doesn't run the original version
                 try
@@ -95,12 +95,18 @@ namespace PizzaOven
             if (JumpToInstallation is not null) JumpToInstallation(version.DownloadPath);
         }
 
-        private bool DownloadDepot(string appID, string depotID, PTVersion version, string username, string outputDir)
+        private bool DownloadDepot(string appID, string depotID, string manifestID, string username, string outputDir)
         {
             if (Global.config.DownloadAutoMode)
-                return new VersionDownloadAuto(appID, depotID, version, outputDir).ShowForDepot();
+            {
+                if (VersionDownloadAuto.TryAutoDownload(appID, depotID, manifestID, outputDir, out bool downloadedDepot))
+                {
+                    return downloadedDepot;
+                }
+                return new VersionDownloadAuto(appID, depotID, manifestID, outputDir).ShowForDepot();
+            }
             else
-                return new VersionDownloadManual(appID, depotID, version, outputDir).ShowForDepot();
+                return new VersionDownloadManual(appID, depotID, manifestID, outputDir).ShowForDepot();
         }
     }
 }

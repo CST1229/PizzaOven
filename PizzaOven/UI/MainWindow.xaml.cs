@@ -98,8 +98,7 @@ namespace PizzaOven
                     {
                         folder = Global.config.ModsFolder,
                         launcher = Global.config.Launcher,
-                        name = "Default",
-                        enabled = false,
+                        name = "Default"
                     });
                 }
             }
@@ -1535,8 +1534,7 @@ namespace PizzaOven
             {
                 folder = Global.config.ModsFolder,
                 launcher = Global.config.Launcher,
-                name = installationName,
-                enabled = false,
+                name = installationName
             });
             Global.config.Installations = Global.Installations;
             Global.UpdateConfig();
@@ -1551,8 +1549,7 @@ namespace PizzaOven
                 {
                     folder = folder,
                     launcher = launcher,
-                    name = version,
-                    enabled = false,
+                    name = version
                 });
                 Global.config.Installations = Global.Installations;
                 Global.UpdateConfig();
@@ -1564,17 +1561,11 @@ namespace PizzaOven
         {
             if (folder == null || Global.Installations == null)
             {
-                if (Global.Installations != null)
-                    foreach (Installation inst in Global.Installations.ToList())
-                    {
-                        inst.enabled = false;
-                    }
                 if (Global.Installations != null && Global.Installations.Count > 0)
                 {
                     Installation inst = Global.Installations[0];
                     Global.config.ModsFolder = inst.folder;
                     Global.config.Launcher = inst.launcher;
-                    inst.enabled = true;
                     InstallationGrid.SelectedItem = inst;
                     LaunchButton.IsEnabled = true;
                 }
@@ -1592,7 +1583,6 @@ namespace PizzaOven
             Installation installationToSelect = null;
             foreach (Installation inst in Global.Installations.ToList())
             {
-                inst.enabled = false;
                 if (inst.folder == folder)
                 {
                     installationToSelect = inst;
@@ -1609,7 +1599,6 @@ namespace PizzaOven
                 return;
             }
 
-            installationToSelect.enabled = true;
             InstallationGrid.ItemsSource = Global.Installations;
             InstallationGrid.SelectedItem = installationToSelect;
             InstallationGrid.ScrollIntoView(installationToSelect);
@@ -1683,9 +1672,12 @@ namespace PizzaOven
         {
             Button button = sender as Button;
             var inst = button.DataContext as Installation;
-            var dialogResult = MessageBox.Show($@"Are you sure you want to remove {inst.name}?" + Environment.NewLine +
-                @"This will not delete the installation's folder; to do that, click the ""Open Folder"" button and delete the folder from there.", $@"Deleting {inst.name}: Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (dialogResult != MessageBoxResult.Yes) return;
+            if (!(Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)))
+            {
+                var dialogResult = MessageBox.Show($@"Are you sure you want to remove {inst.name}?" + Environment.NewLine +
+                    @"This will not delete the installation's folder; to do that, click the ""Open Folder"" button and delete the folder from there.", $@"Deleting {inst.name}: Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (dialogResult != MessageBoxResult.Yes) return;
+            }
             Global.Installations.Remove(inst);
             SelectInstallation(null);
             Global.config.Installations = Global.Installations;

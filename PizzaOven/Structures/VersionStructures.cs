@@ -28,10 +28,13 @@ namespace PizzaOven.Structures
         [JsonPropertyName("manifestID")]
         public string ManifestID { get; set; }
 
+
         [JsonIgnore]
-        public DateTime SteamDBDate => DateTime.ParseExact(SteamDBDateString, "yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
+        public string SteamDBDateString => $"SteamDB seen date: {SteamDBDate.ToString()}";
+        [JsonIgnore]
+        public DateTime SteamDBDate => DateTime.ParseExact(SteamDBDateRaw, "yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
         [JsonPropertyName("steamDBDate")]
-        public string SteamDBDateString { get; set; }
+        public string SteamDBDateRaw { get; set; }
 
         [JsonPropertyName("version")]
         public string Version { get; set; }

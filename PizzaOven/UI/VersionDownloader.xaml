@@ -6,12 +6,12 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:local="clr-namespace:PizzaOven"
         mc:Ignorable="d" Background="#202020" Title="Version Downloader" WindowStartupLocation="CenterScreen"
-        MinWidth="300" MinHeight="150"
+        MinWidth="300" MinHeight="300"
         Width="800" Height="500"
 >
     <Window.Resources>
         <DataTemplate x:Key="VersionTemplate">
-            <Border CornerRadius="5" Margin="0 3 0 3">
+            <Border CornerRadius="5" Margin="10 3 10 3">
                 <Border.BorderBrush>
                     <SolidColorBrush Color="#202020" Opacity="0.75"/>
                 </Border.BorderBrush>
@@ -30,7 +30,7 @@
                     <Rectangle Grid.RowSpan="2" Stretch="UniformToFill" VerticalAlignment="Center"/>
 
                     <TextBlock x:Name="Title" Grid.Column="0" Margin="5 0 5 0" Grid.Row="0" FontWeight="Medium" FontSize="24" TextTrimming="WordEllipsis" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Foreground="#f2f2f2" Text="{Binding DisplayName}"/>
-                    <Button Content="Download" FontSize="18" Grid.Column="1" FontWeight="Medium" Padding="5,0" Margin="5,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="DownloadVersion_Click"/>
+                    <Button Content="Download" FontSize="18" Grid.Column="1" FontWeight="Medium" Padding="10,3" Margin="5,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#181818" BorderBrush="#252525" Foreground="#f2f2f2" Click="DownloadVersion_Click"/>
                     <Grid Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Grid.Row="1" Margin="5 0 5 0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -38,7 +38,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="Date" Margin="5" FontWeight="Medium" FontSize="16" TextTrimming="WordEllipsis" Background="Transparent" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="#aaaaaa" Text="{Binding SteamDBDate}"/>
+                        <TextBlock x:Name="Date" Margin="5" FontWeight="Medium" FontSize="16" TextTrimming="WordEllipsis" Background="Transparent" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="#aaaaaa" Text="{Binding SteamDBDateString}"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -48,6 +48,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -97,13 +99,6 @@
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="Focusable" Value="false"/>
                         <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemsPanel>
@@ -115,5 +110,15 @@
                 </ListView.ItemsPanel>
             </ListView>
         </Border>
+        <TextBlock
+            Grid.Row="2" FontSize="12" TextWrapping="Wrap" Opacity="0.5" FontStyle="Italic" Padding="3,0,3,0"
+            Foreground="#f2f2f2" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+            Text="Note: The letters after version numbers like V1.0.311c are unofficial, and serve to distinguish updates with otherwise identical version numbers."
+        />
+        <TextBlock
+            Grid.Row="3" FontSize="12" TextWrapping="Wrap" Opacity="0.5" FontStyle="Italic" TextAlignment="Center"
+            Padding="3,0,3,5" Foreground="#f2f2f2" HorizontalAlignment="Center" VerticalAlignment="Center"
+            Text="Usually, these identically-numbered versions only differ by credits or localization changes."
+        />
     </Grid>
 </Window>
