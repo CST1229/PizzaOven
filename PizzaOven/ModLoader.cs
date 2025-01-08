@@ -35,7 +35,7 @@ namespace PizzaOven
                     }
             // Delete all dlls that aren't vanilla
             var dlls = new List<string>(new string[] { "fmod.dll", "fmod-gamemaker.dll", "fmodstudio.dll", "gameframe_x64.dll", "steam_api.dll",
-            "steam_api64.dll", "steamworks_x64.dll"});
+            "steam_api64.dll", "steamworks_x64.dll", "_steam_api64.dll"});
             // Also delete mp4 files
             foreach (var file in Directory.GetFiles($"{Global.config.ModsFolder}", "*", SearchOption.TopDirectoryOnly))
                 if ((Path.GetExtension(file).ToLowerInvariant() == ".dll" && !dlls.Contains(Path.GetFileName(file).ToLowerInvariant()))
@@ -164,7 +164,7 @@ namespace PizzaOven
                         {
                             // Copy over file to lang folder
                             File.Copy(modFile, $"{Global.config.ModsFolder}{Global.s}lang{Global.s}{Path.GetFileName(modFile)}", true);
-                            Global.logger.WriteLine($"Copied over {Path.GetFileName(modFile)} to language folder", LoggerType.Info);
+                            Global.logger.WriteLine($"Copied over {modFile} to language folder", LoggerType.Info);
                             successes++;
                         }
                     }
@@ -178,7 +178,7 @@ namespace PizzaOven
                             Directory.CreateDirectory($"{Global.config.ModsFolder}{Global.s}lang{Global.s}fonts");
                             // Copy over file to fonts folder
                             File.Copy(modFile, $"{Global.config.ModsFolder}{Global.s}lang{Global.s}fonts{Global.s}{Path.GetFileName(modFile)}", true);
-                            Global.logger.WriteLine($"Copied over {Path.GetFileName(modFile)} to fonts folder", LoggerType.Info);
+                            Global.logger.WriteLine($"Copied over {modFile} to fonts folder", LoggerType.Info);
                             successes++;
                         }
                     }
@@ -190,7 +190,7 @@ namespace PizzaOven
                         if (!File.Exists($"{dataWin}.po"))
                             File.Copy(dataWin, $"{dataWin}.po", true);
                         File.Copy(modFile, dataWin, true);
-                        Global.logger.WriteLine($"Copied over {Path.GetFileName(modFile)} to use instead of data.win", LoggerType.Info);
+                        Global.logger.WriteLine($"Copied over {modFile} to use instead of data.win", LoggerType.Info);
                         successes++;
                     }
                     // Copy over .bank file in case modder provides entire file instead of .xdelta patch
@@ -199,11 +199,12 @@ namespace PizzaOven
                         var FileToReplace = $"{Global.config.ModsFolder}{Global.s}sound{Global.s}Desktop{Global.s}{Path.GetFileName(modFile)}";
                         if (File.Exists(FileToReplace))
                         {
+                            var dataWin = $"{Global.config.ModsFolder}{Global.s}data.win";
                             // Only make backup if it doesn't already exist
-                            if (!File.Exists($"{FileToReplace}.po"))
-                                File.Copy(FileToReplace, $"{FileToReplace}.po", true);
-                            File.Copy(modFile, FileToReplace, true);
-                            Global.logger.WriteLine($"Copied over {Path.GetFileName(modFile)} to use in sound folder", LoggerType.Info);
+                            if (!File.Exists($"{dataWin}.po"))
+                                File.Copy(dataWin, $"{dataWin}.po", true);
+                            File.Copy(modFile, dataWin, true);
+                            Global.logger.WriteLine($"Copied over {Path.GetFileName(modFile)} to use instead of data.win", LoggerType.Info);
                         }
                         // Copy the file over if its not vanilla
                         else

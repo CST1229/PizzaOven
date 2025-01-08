@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Threading;
 using System.Threading;
 using System;
+using System.IO;
 
 namespace PizzaOven
 {
@@ -37,6 +38,14 @@ namespace PizzaOven
         }
         protected async override void OnStartup(StartupEventArgs e)
         {
+            if (Global.assemblyLocation.StartsWith(Path.GetTempPath()))
+            {
+                MessageBox.Show($"Pizza Oven seems to be currently running in the temporary folder ({Global.assemblyLocation})." +
+                    $"\nPlease extract Pizza Oven's .zip file to a folder before running it.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+                return;
+            }
+
             DispatcherUnhandledException += App_DispatcherUnhandledException;
             RegistryConfig.InstallGBHandler();
             bool running = AlreadyRunning();

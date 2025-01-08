@@ -42,7 +42,7 @@ namespace PizzaOven
     {
         private static readonly DateTime Epoch = new DateTime(1970, 1, 1);
         [JsonPropertyName("_idRow")]
-        public string Id { get; set; }
+        public object Id { get; set; }
         [JsonPropertyName("_sFile")]
         public string FileName { get; set; }
 
@@ -86,7 +86,7 @@ namespace PizzaOven
         [JsonPropertyName("_sProfileUrl")]
         public Uri Link { get; set; }
         [JsonIgnore]
-        public Uri Image => Media.Where(x => x.Type == "image").ToList().Count > 0 ? new Uri($"{Media[0].Base}/{Media[0].File}")
+        public Uri Image => Media.Where(x => x.Type == "image" || x.Type == "screenshot").ToList().Count > 0 ? new Uri($"{Media[0].Base}/{Media[0].File}")
             : new Uri("https://images.gamebanana.com/static/img/DefaultEmbeddables/Sound.jpg");
         [JsonPropertyName("_aPreviewMedia")]
         public List<GameBananaImage> Media { get; set; }
@@ -143,9 +143,11 @@ namespace PizzaOven
         [JsonPropertyName("_sAvatarUrl")]
         public Uri Avatar { get; set; }
         [JsonPropertyName("_sUpicUrl")]
-        public Uri Upic { get; set; }
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+        public Uri? Upic { get; set; }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         [JsonIgnore]
-        public bool HasUpic => Upic.OriginalString.Length > 0;
+        public bool HasUpic => Upic is not null && Upic.OriginalString.Length > 0;
     }
     public class GameBananaItemUpdate
     {
@@ -188,10 +190,12 @@ namespace PizzaOven
         [JsonIgnore]
         public bool HasAltLinks => AlternateFileSources != null;
         [JsonIgnore]
-        public Uri Image => Media.Where(x => x.Type == "image").ToList().Count > 0 ? new Uri($"{Media[0].Base}/{Media[0].File}") 
+        public Uri Image => Media.Where(x => x.Type == "image" || x.Type == "screenshot").ToList().Count > 0 ? new Uri($"{Media[0].Base}/{Media[0].File}") 
             : new Uri("https://images.gamebanana.com/static/img/DefaultEmbeddables/Sound.jpg");
+        [JsonIgnore]
+        public List<GameBananaImage> Media => PreviewMedia.Images;
         [JsonPropertyName("_aPreviewMedia")]
-        public List<GameBananaImage> Media { get; set; }
+        public GameBananaPreviewMedia PreviewMedia { get; set; }
         [JsonPropertyName("_sDescription")]
         public string Description { get; set; }
         [JsonIgnore]
@@ -299,5 +303,11 @@ namespace PizzaOven
         public Uri File { get; set; }
         [JsonPropertyName("_sCaption")]
         public string Caption { get; set; }
+    }
+
+    public class GameBananaPreviewMedia
+    {
+        [JsonPropertyName("_aImages")]
+        public List<GameBananaImage> Images { get; set; }
     }
 }

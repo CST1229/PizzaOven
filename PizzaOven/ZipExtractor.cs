@@ -11,8 +11,10 @@ namespace PizzaOven
 {
     public class ZipExtractor : IPackageExtractor
     {
-        public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
+        public Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
             IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             try
             {
@@ -42,7 +44,7 @@ namespace PizzaOven
             Directory.Move(Directory.GetDirectories(destDirPath)[0], $@"{parentPath}{Global.s}PizzaOven");
             Directory.Delete(destDirPath);
             Directory.Move($@"{parentPath}{Global.s}PizzaOven", destDirPath);
+            return Task.CompletedTask;
         }
-
     }
 }
