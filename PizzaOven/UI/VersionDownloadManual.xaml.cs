@@ -13,22 +13,22 @@ namespace PizzaOven
     {
         public string AppID { get; set; }
         public string DepotID { get; set; }
-        public PTVersion Version { get; set; }
+        public string ManifestID { get; set; }
 
         public string DepotPath { get; set; }
         public string OutputDir { get; set; }
         public bool DownloadedDepot = false;
 
-        public VersionDownloadManual(string appID, string depotID, PTVersion version, string outputDir)
+        public VersionDownloadManual(string appID, string depotID, string manifestID, string outputDir)
         {
             AppID = appID;
             DepotID = depotID;
-            Version = version;
+            ManifestID = manifestID;
             OutputDir = outputDir;
 
             DepotPath = GetDepotPath();
             InitializeComponent();
-            DownloadCommand.Text = $"download_depot {AppID} {DepotID} {version.ManifestID}";
+            DownloadCommand.Text = $"download_depot {AppID} {DepotID} {ManifestID}";
             if (DepotPath != "")
             {
                 NoPathWarning.Visibility = Visibility.Collapsed;
@@ -100,7 +100,8 @@ namespace PizzaOven
             Close();
             Global.config.DownloadAutoMode = true;
             Global.UpdateConfig();
-            DownloadedDepot = new VersionDownloadAuto(AppID, DepotID, Version, OutputDir).ShowForDepot();
+            if (VersionDownloadAuto.TryAutoDownload(AppID, DepotID, ManifestID, OutputDir, out DownloadedDepot)) return;
+            DownloadedDepot = new VersionDownloadAuto(AppID, DepotID, ManifestID, OutputDir).ShowForDepot();
         }
 
         public bool ShowForDepot() {

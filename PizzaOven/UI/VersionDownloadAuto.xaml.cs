@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 
 namespace PizzaOven
 {
@@ -14,16 +15,16 @@ namespace PizzaOven
     {
         public string AppID { get; set; }
         public string DepotID { get; set; }
-        public PTVersion Version { get; set; }
+        public string ManifestID { get; set; }
 
         public string OutputDir { get; set; }
         public bool DownloadedDepot = false;
 
-        public VersionDownloadAuto(string appID, string depotID, PTVersion version, string outputDir)
+        public VersionDownloadAuto(string appID, string depotID, string manifestID, string outputDir)
         {
             AppID = appID;
             DepotID = depotID;
-            Version = version;
+            ManifestID = manifestID;
             OutputDir = outputDir;
             InitializeComponent();
             RememberPassword.IsChecked = Global.config.DownloadRememberPassword;
@@ -47,17 +48,19 @@ namespace PizzaOven
             }
             Close();
 
-            DownloadedDepot = false;
+            DownloadedDepot = DoDownload((bool)RememberPassword.IsChecked, AppID, DepotID, ManifestID, username, OutputDir);
+        }
 
+        private static bool DoDownload(bool rememberPassword, string appID, string depotID, string manifestID, string username, string outputDir)
+        {
             string depotdownloader = $"{Global.assemblyLocation}{Global.s}Dependencies{Global.s}DepotDownloader.exe";
             if (!File.Exists(depotdownloader))
             {
                 MessageBox.Show($"{depotdownloader} was not found.\nPlease try redownloading Pizza Oven.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
-            string logFile = $"{Global.assemblyLocation}{Global.s}depotdownloader.log";
 
-            string rememberPasswordArg = (bool)RememberPassword.IsChecked ? "-remember-password " : "";
+            string rememberPasswordArg = rememberPassword ? "-remember-password " : "";
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.CreateNoWindow = false;
@@ -65,7 +68,7 @@ namespace PizzaOven
             startInfo.FileName = depotdownloader;
             startInfo.WindowStyle = ProcessWindowStyle.Normal;
             startInfo.WorkingDirectory = Global.assemblyLocation;
-            startInfo.Arguments = $@"-app {AppID} -depot {DepotID} -manifest {Version.ManifestID} {rememberPasswordArg}-username ""{UsernameInput.Text}"" -dir {OutputDir}";
+            startInfo.Arguments = $@"-app {appID} -depot {depotID} -manifest {manifestID} {rememberPasswordArg}-username ""{username}"" -dir {outputDir}";
             using Process process = new Process();
             process.StartInfo = startInfo;
 
@@ -74,17 +77,16 @@ namespace PizzaOven
 
             try
             {
-                Directory.Delete($"{OutputDir}.DepotDownloader{Global.s}", true);
+                Directory.Delete($"{outputDir}.DepotDownloader{Global.s}", true);
             }
             catch { }
 
             if (process.ExitCode != 0)
             {
                 MessageBox.Show($"Could not download the depot.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
-            DownloadedDepot = true;
-            return;
+            return true;
         }
 
         private void ManualMode_Click(object sender, RoutedEventArgs e)
@@ -92,7 +94,7 @@ namespace PizzaOven
             Close();
             Global.config.DownloadAutoMode = false;
             Global.UpdateConfig();
-            DownloadedDepot = new VersionDownloadManual(AppID, DepotID, Version, OutputDir).ShowForDepot();
+            DownloadedDepot = new VersionDownloadManual(AppID, DepotID, ManifestID, OutputDir).ShowForDepot();
         }
         public bool ShowForDepot()
         {
@@ -100,7 +102,17 @@ namespace PizzaOven
             return DownloadedDepot;
         }
 
-        private string GetSteamUsername()
+        public static bool TryAutoDownload(string appID, string depotID, string manifestID, string outputDir, out bool downloadedDepot)
+        {
+            downloadedDepot = false;
+            if (!(Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))) return false;
+            string username = GetSteamUsername();
+            if (username == "") return false;
+            downloadedDepot = DoDownload(Global.config.DownloadRememberPassword, PTVersion.AppID, PTVersion.DepotID, manifestID, username, outputDir);
+            return true;
+        }
+
+        private static string GetSteamUsername()
         {
             var key = Registry.CurrentUser.OpenSubKey($@"SOFTWARE\Valve\Steam");
             if (key != null)

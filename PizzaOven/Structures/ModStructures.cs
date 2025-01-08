@@ -30,7 +30,6 @@ namespace PizzaOven
         public string folder { get; set; }
         public string launcher { get; set; }
         public string name { get; set; }
-        public bool enabled { get; set; }
     }
     public class Config
     {

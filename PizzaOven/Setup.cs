@@ -63,8 +63,7 @@ namespace PizzaOven
                     {
                         folder = Global.config.ModsFolder,
                         launcher = Global.config.Launcher,
-                        name = "Default",
-                        enabled = false,
+                        name = "Default"
                     });
                 Global.config.Installations = Global.Installations;
                 Global.UpdateConfig();
