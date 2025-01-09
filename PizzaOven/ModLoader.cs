@@ -151,7 +151,8 @@ namespace PizzaOven
                             else
                             {
                                 Global.logger.WriteLine($"{Path.GetFileName(modFile)} wasn't able to patch any file. Ensure that either the mod or your game version is up to date. {Path.GetFileName(modFile)} is intended for {version}. " +
-                                    $"If this version number matches with your current game version go to {Global.config.ModsFolder} and delete data.win.po and anything else with a .po extension then verify integrity of game files and try again.", LoggerType.Error);
+                                    $"If this version number matches with your current game version go to {Global.config.ModsFolder} and delete data.win.po and anything else with a .po extension then verify integrity of game files and try again. " +
+                                    $"If the mod is intended for an older version, you can download it in the Installations tab.", LoggerType.Error);
                             }
                             errors++;
                         }
@@ -199,12 +200,11 @@ namespace PizzaOven
                         var FileToReplace = $"{Global.config.ModsFolder}{Global.s}sound{Global.s}Desktop{Global.s}{Path.GetFileName(modFile)}";
                         if (File.Exists(FileToReplace))
                         {
-                            var dataWin = $"{Global.config.ModsFolder}{Global.s}data.win";
                             // Only make backup if it doesn't already exist
-                            if (!File.Exists($"{dataWin}.po"))
-                                File.Copy(dataWin, $"{dataWin}.po", true);
-                            File.Copy(modFile, dataWin, true);
-                            Global.logger.WriteLine($"Copied over {Path.GetFileName(modFile)} to use instead of data.win", LoggerType.Info);
+                            if (!File.Exists($"{FileToReplace}.po"))
+                                File.Copy(FileToReplace, $"{FileToReplace}.po", true);
+                            File.Copy(modFile, FileToReplace, true);
+                            Global.logger.WriteLine($"Copied over {modFile} to use in sound folder", LoggerType.Info);
                         }
                         // Copy the file over if its not vanilla
                         else
