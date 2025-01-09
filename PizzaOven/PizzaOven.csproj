@@ -62,6 +62,9 @@
 	<None Update="Dependencies\DepotDownloader.LICENSE.txt">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
+	<None Update="Dependencies\DepotDownloader.ABOUT.txt">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
   </ItemGroup>
 
   <ItemGroup>
